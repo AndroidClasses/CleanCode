@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/tabhost"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/bottom_tab_bg"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="0.0dip"
+            android:layout_weight="1.0"/>
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.0"
+            android:visibility="gone"/>
+
+        <TextView
+            style="@style/span_line_style"/>
+
+        <RadioGroup
+            android:id="@+id/main_radio"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/radio_button_panel1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <RadioButton
+                    android:id="@+id/radio_button1"
+                    style="@style/main_tab_bottom"
+                    android:background="@drawable/main_tab_home"
+                    android:tag="radio_button0"
+                    android:text="@string/tab_main"/>
+            </FrameLayout>
+
+            <RelativeLayout
+                android:id="@+id/radio_button_panel2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <RadioButton
+                    android:id="@+id/radio_button2"
+                    style="@style/main_tab_bottom"
+                    android:layout_width="fill_parent"
+                    android:background="@drawable/main_tab_message"
+                    android:tag="radio_button1"
+                    android:text="@string/tab_message"/>
+
+                <View
+                    android:id="@+id/conversation_center_divider"
+                    android:layout_width="0dip"
+                    android:layout_height="0dip"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:id="@+id/tv_tipMsgcnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/tipcnt_margin_left"
+                    android:layout_toRightOf="@+id/conversation_center_divider"
+                    android:background="@drawable/unread_count_bg"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/unread_count_text_size"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+
+            <FrameLayout
+                android:id="@+id/radio_button_panel3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <RadioButton
+                    android:id="@+id/radio_button3"
+                    style="@style/main_tab_bottom"
+                    android:background="@drawable/main_tab_search"
+                    android:tag="radio_button2"
+                    android:text="@string/tab_find_doctor"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/radio_button_panel5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <RadioButton
+                    android:id="@+id/radio_button5"
+                    style="@style/main_tab_bottom"
+                    android:background="@drawable/main_tab_search"
+                    android:tag="radio_button5"
+                    android:text="@string/tab_discovery" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/radio_button_panel4"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <RadioButton
+                    android:id="@+id/radio_button4"
+                    style="@style/main_tab_bottom"
+                    android:background="@drawable/main_tab_mine"
+                    android:tag="radio_button4"
+                    android:text="@string/tab_mine"/>
+            </FrameLayout>
+        </RadioGroup>
+    </LinearLayout>
+
+</TabHost>

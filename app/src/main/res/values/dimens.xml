@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="unread_count_text_size">10sp</dimen>
+    <dimen name="tipcnt_padding">3dip</dimen>
+    <dimen name="tipcnt_margin_left">11dip</dimen>
+
+    <dimen name="tab_bar_text_size">12sp</dimen>
+    <dimen name="tab_bar_text_padding_bottom">6dip</dimen>
+    <dimen name="main_bottom_height">51dip</dimen>
+</resources>

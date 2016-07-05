@@ -1,0 +1,33 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"/>-->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <!-- <item name="actionSheetStyle">@style/ActionSheetStyleIOS7</item> -->
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <!-- 分割线样式 -->
+    <style name="span_line_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@color/span_line_color</item>
+    </style>
+
+    <!--&lt;!&ndash; Main activity bottom tab style &ndash;&gt;-->
+    <style name="main_tab_bottom">
+        <item name="android:button">@null</item>
+        <item name="android:textSize">@dimen/tab_bar_text_size</item>
+        <item name="android:textColor">@color/main_tab_text_color</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">bottom|center_horizontal</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">@dimen/main_bottom_height</item>
+        <item name="android:paddingBottom">@dimen/tab_bar_text_padding_bottom</item>
+        <item name="android:paddingTop">@dimen/tab_bar_text_padding_bottom</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+</resources>

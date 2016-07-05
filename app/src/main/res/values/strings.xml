@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">BottomTabs</string>
+
+    <string name="tab_main">首页</string>
+    <string name="tab_message">消息</string>
+    <string name="tab_find_doctor">找医生</string>
+    <string name="tab_mine">我</string>
+    <string name="tab_discovery">发现</string>
+
+    <string name="toast_exit">再按一次退出~</string>
+</resources>

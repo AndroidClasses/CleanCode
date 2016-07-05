@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#31aeb2</color>
+    <color name="primary_dark">#1B5E20</color>
+    <color name="accent">#f36163</color>
+
+    <color name="bottom_tab_bg">#f3f3f3</color>
+    <color name="line">#C9C9C9</color>
+    <color name="span_line_color">#d9d9d9</color>
+
+    <color name="tab_bar_text_default_color">@color/primary</color>
+    <color name="tab_bar_text_hover_color">@color/primary_dark</color>
+    <color name="white">#ffffff</color>
+</resources>
