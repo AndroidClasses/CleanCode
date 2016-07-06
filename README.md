@@ -19,7 +19,7 @@ Enable all 5 TABs like this:
 
 ```JSON
 {
-    "MainActivity":"RecyclerSummaryV2Activity,Message_TabActivity,DiscoveryActivity,MineActivity"
+    "MainActivity":"RecyclerSummaryV2Activity,Message_TabActivity,DiscoveryActivity,DiscoveryActivity,MineActivity"
 }
 ```
 
@@ -68,7 +68,7 @@ Name are everywhere, variables, functions, arguments, classes, packages, source 
 
  - rule 6 Avoid Encoding:
 
-     Hungarian Notation is hard to read and change and might mislead the reader. Member Prefixes becomes unseen clutter while cleasses and functions is small enough. Interfaces and Implementations, prefer encoding the implementation name rather than the interface name.
+     Hungarian Notation is hard to read and change and might mislead the reader. Member Prefixes becomes unseen clutter while the name of classes and functions is small enough. Interfaces and Implementations, prefer encoding the implementation name rather than the interface name.
 
  - rule 7 Avoid Mental Mapping:
 
