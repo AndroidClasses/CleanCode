@@ -3,7 +3,7 @@
 BottomTabs
 ===================
 
-Bottom Navigation tab with configurable activities. There are 3-5 TABs on the bottom navigation bar, and the account of TABs is able to be configured via a JSON file, first_page_item in the assets/ folder.
+Bottom Navigation tab with configurable activities. There are 3-5 TABs on the bottom navigation bar, and the count of TABs is able to be configured via a JSON file, first_page_item in the assets/ folder.
 
 Home | Message | Find | Discovery | Me |
 :-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
