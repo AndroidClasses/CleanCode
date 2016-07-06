@@ -1,291 +1,209 @@
-# CleanCode
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-NavigationTabBar-blue.svg?style=flat-square)](http://android-arsenal.com/details/1/3382)
-[![Download](https://api.bintray.com/packages/gigamole/maven/navigationtabbar/images/download.svg) ](https://bintray.com/gigamole/maven/navigationtabbar/_latestVersion)
+[![Clean Code](https://images-na.ssl-images-amazon.com/images/I/41S371NEJXL._SX375_BO1,204,203,200_.jpg) ](https://www.amazon.com/Clean-Code-Handbook-Software-Craftsmanship/dp/0132350882/ref=sr_1_1?ie=UTF8&qid=1467776256&sr=8-1&keywords=clean+code)
 
 BottomTabs
 ===================
 
-Bottom Navigation tab with configurable activities. 
+Bottom Navigation tab with configurable activities. There are 3-5 TABs on the bottom navigation bar, and the account of TABs is able to be configured via a JSON file, first_page_item in the assets/ folder.
 
-Horizontal NTB | NTB with bottom behavior | NTB with selected icons | NTB with CoordinatorLayout | Vertical NTB | NTB Samples |
-:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-![](https://lh6.googleusercontent.com/-Bf7uxUiRvfk/VvpVlkZzsVI/AAAAAAAACPA/Ysg9uuBpaL8UhsXpYPlyNJK6IJssdkMvg/w325-h552-no/hntb.gif)|![](https://lh4.googleusercontent.com/-mF70XCnMpgk/V1NnK34tnhI/AAAAAAAACkY/z0Z15Q_7gg4fMovWiEvo9agJgz7m933cQCL0B/w323-h552-no/btbntb.gif)|![](https://lh5.googleusercontent.com/-LcHHajuKNzw/Vz77El2lHsI/AAAAAAAACiQ/I0CjrMUP6R4ioH9h8nEe37LCqXmb3GJKACL0B/w317-h552-no/ntbsi.gif)|![](https://lh6.googleusercontent.com/-hMvLn-jzY3k/VzcPrGAmr4I/AAAAAAAACc0/US0yokfG23kQJEAPxFoPp-8lOUNRSPV9QCL0B/w321-h552-no/cltntb.gif)|![](https://lh4.googleusercontent.com/-k4Ac7-c2m8E/VvpVlk3ZmLI/AAAAAAAACPA/21ISoAYGZzUlvGPmIauXwfYZOKdCYIRGg/w323-h552-no/vntb.gif)|![](https://lh5.googleusercontent.com/-hmELfZQvexU/VvpVlooaPvI/AAAAAAAACPA/5HA5ic7dASwBUYqpqcfxAmfLzPPDXejqQ/w322-h552-no/ntbs.gif)
-U can check the sample app [here](https://github.com/DevLight-Mobile-Agency/NavigationTabBar/tree/master/app).
+Home | Message | Find | Discovery | Me |
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
+![](https://github.com/AndroidClasses/CleanCode/blob/master/app/src/main/res/drawable-xhdpi/tab_main_f.9.png)|![](https://github.com/AndroidClasses/CleanCode/blob/master/app/src/main/res/drawable-xhdpi/tab_message_f.9.png)|![](https://github.com/AndroidClasses/CleanCode/blob/master/app/src/main/res/drawable-xhdpi/tab_search_f.9.png)|![](https://github.com/AndroidClasses/CleanCode/blob/master/app/src/main/res/drawable-xhdpi/tab_search_f.9.png)|![](https://github.com/AndroidClasses/CleanCode/blob/master/app/src/main/res/drawable-xhdpi/tab__mine_f.9.png)
+U can check the sample app [here](https://github.com/AndroidClasses/CleanCode/tree/master/app).
 
-Download
+Tabs configuration
 ------------
 
-You can download a .aar` from GitHub's [releases page](https://github.com/DevLight-Mobile-Agency/NavigationTabBar/releases).
+You can view the configuration file online ` from GitHub's [first_page_item](https://github.com/AndroidClasses/CleanCode/blob/master/app/src/main/assets/first_page_item).
 
-Or use Gradle jCenter:
+Enable all 5 TABs like this:
 
-```groovy
-dependencies {
-    repositories {
-        mavenCentral()
-        maven {
-            url  'http://dl.bintray.com/gigamole/maven/'
-        }
-    }
-    compile 'com.github.devlight.navigationtabbar:navigationtabbar:+'
+```JSON
+{
+    "MainActivity":"RecyclerSummaryV2Activity,Message_TabActivity,DiscoveryActivity,MineActivity"
 }
 ```
 
-Or Gradle Maven Central:
+Or enable Message, Discovery and Me only:
 
-```groovy
-compile 'com.github.devlight.navigationtabbar:navigationtabbar:1.2.2'
+```JSON
+{
+    "MainActivity":"Message_TabActivity,DiscoveryActivity,MineActivity"
+}
 ```
 
-Or Maven:
+For the variants of RecyclerSummaryV2Activity, it could be replace by others options:
 
-```groovy
-<dependency>
-    <groupId>com.github.devlight.navigationtabbar</groupId>
-    <artifactId>navigationtabbar</artifactId>
-    <version>1.2.2</version>
-    <type>aar</type>
-</dependency>
+```
+*    SummaryActivity
+*    RecyclerSummaryActivity
+*    RecyclerSummaryV2Activity
 ```
 
-Android SDK Version
-=========
-
-NavigationTabBar requires a minimum SDK version of 11.
-
-Sample
+Clean Code Textbook
 ========
 
-<b>Parameters</b>
+<b>Names</b>
 
-For NTB you can set such parameters as:
+Name are everywhere, variables, functions, arguments, classes, packages, source files and direcoties(jar, war and ear file ...), folow some rules to improve the readability of your code.
 
- - models:
+ - rule 1 Use Intention-revealing Name:
 
-     allows you to set NTB models, where you set icon and color. Can be set up only via code.
+     choosing good name takes time but save more than it takes, a name should tell the reader why it exists, what it does, and how it is used, which makes it easier to understand and change code.
 
- - behavior:
+ - rule 2 Avoid Disinformation:
 
-     allows you to set bottom translation behavior.
+     keep words being hnonest to our intent meaning and avoid leaving false clues taht obscure the meaning of the code.
 
- - view pager:
+ - rule 3 Make Meaningful Distinctions:
 
-     allows you to connect NTB with ViewPager. If you want your can also set OnPageChangeListener.
+     make different name if and only if they mean diferent things.　noninformative number-series name provid no clue to the author's intent and noise words is redundant and meaningless distinction.
 
- - background:
+ - ruel 4 Use Pronounceable Names:
 
-    allows you to set background to NTB which automatically set with offset relative to badge gravity.
+     programming is a social activity, and programmer could discuss well with pronounceable name as human is good at words with concepts.
 
- - model selected icon:
+ - rule 5 Use Seachable Names:
 
-     allows you to set selected icon when current model is active.
+     the name length corresponds to the size of its scope.
 
- - model title:
+ - rule 6 Avoid Encoding:
 
-     allows you to enable title in you model.
+     Hungarian Notation is hard to read and change and might mislead the reader. Member Prefixes becomes unseen clutter while cleasses and functions is small enough. Interfaces and Implementations, prefer encoding the implementation name rather than the interface name.
 
- - model badge:
+ - rule 7 Avoid Mental Mapping:
 
-     allows you to enable badge in you model.
+     Clarity is king, professionals use their powers for good and write code that others can understand while smart programmers sometime like to show off their smarts by demonstrating their mental juggling abilities.
 
- - use custom typeface on badge:
+ - rule 8 Class Names:
 
-     allows you to handle set of custom typeface in your badge.
+     classes and objects should have noun or noun phrase name and should not be a verb. Prefer 'Customer', 'WikiPag'e, 'Account' or 'AddressParser'  avoid 'Manager', 'Processor', 'Data' or 'Info'.
 
- - title mode:
+ - rule 9 Methods Names:
 
-     allows you to handle mode of the model title show. Can show all or only active.
+     methods should have verb or verb phrase names. Accessors, mutators and predicates should be name for their value and prefixed with get, set and is according to java bean standard. User static methods with name that describe the argment for private overloaded constructors.
 
- - scale mode:
+ - rule 10 Donnot Be  Cute:
 
-     allows you to handle mode of the model icon and title scale.
+      choose clarity over entertainment value, say what you mean and mean what you say.
 
- - tint mode:
+ - rule 11 Pick One Word per Concept:
 
-      allows you to enable or disable icon tinting.
+     A consistent lexicon is a great boon to the programmers who must use your code. Pick one word for on abstract concept and stick on it.
 
- - badge position:
+ - rule 12 Donnot Pun:
 
-     allows you to set the badge position in you model. Can be: left(25%), center(50%) and right(75%).
+     Use the same word for two different purposes is essentially a pun, don't do that.
 
- - badge gravity:
+ - rule 13 Use Solution Domain Names:
 
-     allows you to set the badge gravity in NTB. Can be top or bottom.
+     Choosing technical names for technical things is usually the most appropriate course as code readers wil lbe programmers. Go ahead and use computeer's science terms, algorithm names, pattern names, math names, and so forth.
 
- - badge colors:
+ - rule 14 Use Problem Domain Names:
 
-      allows you to set the badge bg and title colors.
+     Use the names from the problem domain if and only if there is no "programmer-eese" for what we are doing.
 
- - typeface:
+ - rule 15 Add Meaningful Context:
 
-     allows you to set custom typeface to your title.
+     place names in context for your reader by enclosing them in well-named classes, functions, or namespaces.
 
- - corners radius:
+ - rule 16 Donnot Add Gratuitous Context:
 
-     allows you to set corners radius of pointer.
-
- - animation duration:
-
-     allows you to set animation duration.
-
- - inactive color:
-
-     allows you to set inactive icon color.
-
- - active color:
-
-     allows you to set active icon color.
-
- - tab bar listener:
-
-     allows you to set listener which triggering on start or on end when you set model index.
-
- - preview colors:
-
-     allows you to set preview colors, which generate count of models equals to count of colors.
-
-<b>Tips</b>
-
-Creation of models occurs through Builder pattern.
-
-ModelBuilder requires two fields: icon and color. Title, badge title and selected icon is optional.
-
-You can set selected icon. Resize and scale of selected icon equals to original icon.
-
-Orientation automatically detected according to view size.
-
-By default badge bg color is the active model color and badge title color is the model bg color. To reset colors just set badge bg and title color to 0.
-
-If your set ViewPager you can action down on active pointer and do like drag.
-
-If you want to set the background to NTB, just set background via XML or code and its automatically set relative to badge gravity.
+     Shorter names are generally better than longer ones, so long as they are clear.
 
 
-<b>Init</b>
+<b>Functions</b>
 
-Check out in code init:
+Functions are the first line of organization in any program, make it easy to read and understand.
 
-```java
-final NavigationTabBar navigationTabBar = (NavigationTabBar) findViewById(R.id.ntb);
-final ArrayList<NavigationTabBar.Model> models = new ArrayList<>();
-models.add(
-        new NavigationTabBar.Model.Builder(
-                getResources().getDrawable(R.drawable.ic_first),
-                Color.parseColor(colors[0])
-        ).title("Heart")
-                .badgeTitle("NTB")
-                .build()
-);
-models.add(
-        new NavigationTabBar.Model.Builder(
-                getResources().getDrawable(R.drawable.ic_second),
-                Color.parseColor(colors[1])
-        ).title("Cup")
-                .badgeTitle("with")
-                .build()
-);
-models.add(
-        new NavigationTabBar.Model.Builder(
-                getResources().getDrawable(R.drawable.ic_third),
-                Color.parseColor(colors[2])
-        ).title("Diploma")
-                .badgeTitle("state")
-                .build()
-);
-models.add(
-        new NavigationTabBar.Model.Builder(
-                getResources().getDrawable(R.drawable.ic_fourth),
-                Color.parseColor(colors[3])
-        ).title("Flag")
-                .badgeTitle("icon")
-                .build()
-);
-models.add(
-        new NavigationTabBar.Model.Builder(
-                getResources().getDrawable(R.drawable.ic_fifth),
-                Color.parseColor(colors[4])
-        ).title("Medal")
-                .badgeTitle("777")
-                .build()
-);
-navigationTabBar.setModels(models);
-navigationTabBar.setViewPager(viewPager, 2);
+* Small
+* Do One Thing
+* One Level of Abstraction per Function
+* Switch Statements
+* Use Descriptive Names
+* Function Arguments
+* Have No Side Effects
+* Command Query Seperation
+* Prefer Exception to Returning Error Code
+* Don't Repeat Yourself
+* Structured Programming
+* How Do You Write Function Like This
 
-navigationTabBar.setTitleMode(NavigationTabBar.TitleMode.ACTIVE);
-navigationTabBar.setBadgeGravity(NavigationTabBar.BadgeGravity.BOTTOM);
-navigationTabBar.setBadgePosition(NavigationTabBar.BadgePosition.CENTER);
-navigationTabBar.setTypeface("fonts/custom_font.ttf");
-navigationTabBar.setIsBadged(true);
-navigationTabBar.setIsTitled(true);
-navigationTabBar.setIsTinted(true);
-navigationTabBar.setIsBadgeUseTypeface(true);
-navigationTabBar.setBadgeBgColor(Color.RED);
-navigationTabBar.setBadgeTitleColor(Color.WHITE);
-```
+<b>Comments</b>
 
-If your models is in badge mode you can set title, hide, show, toggle and update badge title like this:
-```java
-model.setTitle("Here some title to model");
-model.hideBadge();
-model.showBadge();
-model.toggleBadge();
-model.updateBadgeTitle("Here some title like NEW or some integer value");
-```
+* Comments Do Not Make Up for Bad Code
+* Explain Yourself in Code
+* Good Comments
+* Bad Comments
 
-To enable behavior translation inside CoordinatorLayout when at bottom of screen:
-```java
-bottomNavigation.setBehaviorEnabled(true);
-```
+<b>Formatting</b>
 
-Other methods check out in sample.
+* The Purpose of Formatting
+* Vertical Formatting
+* Horizontal Formatting
+* Team Rule
+* Uncle Bob's Formatting Rules
 
-And XML init:
+<b>Objects and Data Structures</b>
 
-```xml
-<com.gigamole.navigationtabbar.ntb.NavigationTabBar
-   android:id="@+id/ntb"
-   android:layout_width="match_parent"
-   android:layout_height="50dp"
-   app:ntb_animation_duration="400"
-   app:ntb_preview_colors="@array/colors"
-   app:ntb_corners_radius="10dp"
-   app:ntb_active_color="#fff"
-   app:ntb_inactive_color="#000"
-   app:ntb_badged="true"
-   app:ntb_titled="true"
-   app:ntb_scaled="true"
-   app:ntb_tinted="true"
-   app:ntb_title_mode="all"
-   app:ntb_badge_position="right"
-   app:ntb_badge_gravity="top"
-   app:ntb_badge_bg_color="#ffff0000"
-   app:ntb_badge_title_color="#ffffffff"
-   app:ntb_typeface="fonts/custom_typeface.ttf"
-   app:ntb_badge_use_typeface="true"/>
-```
+* Data Abstraction
+* Data/Object Anti-Symmetry
+* The Law of Demeter
+* Data Transfer Objects
+
+<b>Error Handleing</b>
+
+* Use Exception Rather Than Return Codes
+* Write Your Try-Catch-Finally Statement First
+* Use Unchecked Exception
+* Provide Context with Exception
+* Define Exception Classes in Terms of a Caller's Needs
+* Don't Return Null
+* Don't Pass Null
+
+<b>Boundaries</b>
+
+<b>Unit Tests</b>
+
+<b>Classes</b>
+
+<b>Systems</b>
+
+<b>Emergence</b>
+
+<b>Concurrency</b>
+
+<b>Successive Refinement</b>
+
+<b>JUnit Internals</b>
+
+<b>Refactoring SerialDate</b>
+
+<b>Smell and Heuristics</b>
 
 Getting Help
 ======
 
-To report a specific problem or feature request, [open a new issue on Github](https://github.com/DevLight-Mobile-Agency/NavigationTabBar/issues/new).
+To report a specific problem or feature request, [open a new issue on Github](https://github.com/AndroidClasses/CleanCode/issues/new).
 
 License
 ======
 
-Apache 2.0 and MIT. See [LICENSE](https://github.com/DevLight-Mobile-Agency/NavigationTabBar/blob/master/LICENSE.txt) file for details.
+Apache 2.0 and MIT. See [LICENSE](https://github.com/AndroidClasses/CleanCode/blob/master/LICENSE.txt) file for details.
 
 Inspiration
 ======
+
+Coming soon with a cute UI library integrating.
 
 TapBar interactions| Circle interactions | Title interactions
 :-------------------------:|:-------------------------:|:-------------------------:
 ![](https://s-media-cache-ak0.pinimg.com/originals/39/ee/33/39ee330f3460bd638284f0576bc95b65.gif)|![](https://s-media-cache-ak0.pinimg.com/564x/f4/0d/a9/f40da9e5b73eb5e0e46681eba38f1347.jpg)|![](https://s-media-cache-ak0.pinimg.com/564x/14/eb/dd/14ebddfc0d92f02be3d61ede48a9da6e.jpg)
 
-Thanks to [Valery Nuzhniy](https://www.pinterest.com/hevbolt/) for NTB badge design.
+Thanks to [Valery Nuzhniy](https://www.pinterest.com/hevbolt/) for NTB badge design, [DevLight Mobile Agency](https://github.com/DevLight-Mobile-Agency) for NTB implement.
 
 Author
 =======
 
-Made in [Yang Feng](https://github.com/AndroidClasses)
+Made in [AndroidClasses](https://github.com/AndroidClasses)
 
-Created by [Basil Miller](https://github.com/GIGAMOLE) - [@gigamole](mailto:e13310@gmail.com)
+Created by [Yang Feng](https://github.com/funyoung) - [@gigamole](mailto:e13310@gmail.com)
