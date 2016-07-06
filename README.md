@@ -206,4 +206,4 @@ Author
 
 Made in [AndroidClasses](https://github.com/AndroidClasses)
 
-Created by [Yang Feng](https://github.com/funyoung) - [@gigamole](mailto:e13310@gmail.com)
+Created by [Yang Feng](https://github.com/funyoung) - [@funyoug](mailto:e13310@gmail.com)
