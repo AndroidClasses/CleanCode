@@ -7,67 +7,65 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.FrameLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
 import com.cleaner.config.MainPageConfig;
+import com.cleaner.view.BadgeRadioButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MainActivity extends TabActivity implements OnCheckedChangeListener {
+public class MainActivity extends TabActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @BindView(android.R.id.tabhost)
-    TabHost mTabHost;
-    @BindView(R.id.radio_button_panel1)
-    FrameLayout radio_button_panel1;
-    @BindView(R.id.radio_button1)
-    RadioButton mRadioButton_1;
-    @BindView(R.id.radio_button_panel2)
-    RelativeLayout radio_button_panel2;
-    @BindView(R.id.radio_button2)
-    RadioButton mRadioButton_2;
-    @BindView(R.id.radio_button_panel3)
-    FrameLayout radio_button_panel3;
-    @BindView(R.id.radio_button3)
-    RadioButton mRadioButton_3;
-    @BindView(R.id.radio_button_panel4)
-    FrameLayout radio_button_panel4;
-    @BindView(R.id.radio_button4)
-    RadioButton mRadioButton_4;
-    @BindView(R.id.radio_button_panel5)
-    FrameLayout radio_button_panel5;
-    @BindView(R.id.radio_button5)
-    RadioButton mRadioButton_5;
+    TabHost tabHost;
 
-    public static final int RADIO_MAIN = 0;
-    public static final int RADIO_CONVERSATION = 1;
-    public static final int RADIO_PATIENT = 2;
-    public static final int RADIO_DISCOVERY = 3;
-    public static final int RADIO_MY = 4;
+    @BindView(R.id.summaryBadgeRadio)
+    BadgeRadioButton summaryBadgeRadio;
 
-    public static final String WHICH_ACTIVITY = "which_activity";
-    static int whichActivity = RADIO_MAIN;
+    @BindView(R.id.conversationBadgeRadio)
+    BadgeRadioButton conversationBadgeRadio;
 
-    public static final String TAB_ITEM_MAIN = "tabitem_amin";
-    public static final String TAB_ITEM_CONVERSATION = "tabitem_conversation";
-    public static final String TAB_ITEM_PATIENT = "tabitem_patient";
-    public static final String TAB_ITEM_MY = "tabitem_my";
-    public static final String TAB_ITEM_DISCOVERY = "tabitem_discovery";
+    @BindView(R.id.contactBadgeRadio)
+    BadgeRadioButton contactBadgeRadio;
+
+    @BindView(R.id.exploreBadgeRadio)
+    BadgeRadioButton exploreBadgeRadio;
+
+    @BindView(R.id.profileBadgeRadio)
+    BadgeRadioButton profileBadgeRadio;
+
+    private static final int INDEX_SUMMARY = 0;
+    private static final int INDEX_CONVERSATION = 1;
+    private static final int INDEX_CONTACT = 2;
+    private static final int INDEX_EXPLORE = 3;
+    private static final int INDEX_PROFILE = 4;
+    private static int activeIndex = INDEX_SUMMARY;
+
+    private static final String ACTIVE_INDEX_KEY = "ACTIVE_INDEX_KEY";
+
+    private static final String TAB_SPEC_SUMMARY = "TAB_SPEC_SUMMARY";
+    private static final String TAB_SPEC_CONVERSATION = "TAB_SPEC_CONVERSATION";
+    private static final String TAB_SPEC_CONTACT = "TAB_SPEC_CONTACT";
+    private static final String TAB_SPEC_EXPLORE = "TAB_SPEC_EXPLORE";
+    private static final String TAB_SPEC_PROFILE = "TAB_SPEC_PROFILE";
     private TabSpec tabConversation;
+
+    private static final int EVENT_SUMMARY = 0;
+    private static final int EVENT_CONVERSATION = 1;
+    private static final int EVENT_CONTACT = 4;
+    private static final int EVENT_EXPLORE = 5;
+    private static final int EVENT_PROFILE = 3;
 
     private MainPageConfig mainPageConfig;
 
-    private RadioButton mCurrentButton;
-    private long mExitTime;
+    private BadgeRadioButton activeBadgeRadio;
+
+    private long exitInterval;
 
     private Unbinder unbinder;
 
@@ -75,7 +73,7 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
-            setWhichActivity(savedInstanceState.getInt(WHICH_ACTIVITY, RADIO_MAIN));
+            setActiveIndex(savedInstanceState.getInt(ACTIVE_INDEX_KEY, INDEX_SUMMARY));
         }
 
         setContentView(R.layout.activity_main);
@@ -86,7 +84,7 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
         super.onContentChanged();
         unbinder = ButterKnife.bind(this);
 
-        bindUnreadCountTextView(R.id.tv_tipMsgcnt);
+        bindUnreadCountTextView(conversationBadgeRadio);
 
 //        checkAndLoginXbkpIM();
 //        PatientApplication.getInstance().addActivity(this);
@@ -109,14 +107,14 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
     private TabSpec getHomePage() {
         TabSpec tabNearby = null;
         if (mainPageConfig.hasSummary()) {
-            tabNearby = mTabHost.newTabSpec(TAB_ITEM_MAIN);
-            tabNearby.setIndicator(TAB_ITEM_MAIN).setContent(new Intent(this, SummaryActivity.class));
+            tabNearby = tabHost.newTabSpec(TAB_SPEC_SUMMARY);
+            tabNearby.setIndicator(TAB_SPEC_SUMMARY).setContent(new Intent(this, SummaryActivity.class));
         } else if (mainPageConfig.hasRecyclerSummary()) {
-            tabNearby = mTabHost.newTabSpec(TAB_ITEM_MAIN);
-            tabNearby.setIndicator(TAB_ITEM_MAIN).setContent(new Intent(this, RecyclerSummaryActivity.class));
+            tabNearby = tabHost.newTabSpec(TAB_SPEC_SUMMARY);
+            tabNearby.setIndicator(TAB_SPEC_SUMMARY).setContent(new Intent(this, RecyclerSummaryActivity.class));
         } else if (mainPageConfig.hasRecyclerSummaryV2()) {
-            tabNearby = mTabHost.newTabSpec(TAB_ITEM_MAIN);
-            tabNearby.setIndicator(TAB_ITEM_MAIN).setContent(new Intent(this, RecyclerSummaryV2Activity.class));
+            tabNearby = tabHost.newTabSpec(TAB_SPEC_SUMMARY);
+            tabNearby.setIndicator(TAB_SPEC_SUMMARY).setContent(new Intent(this, RecyclerSummaryV2Activity.class));
         } else {
             // Temporarily not processed
         }
@@ -127,7 +125,7 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
     private TabSpec getMessagePage() {
         TabSpec tabMessage = null;
         if (mainPageConfig.hasMessage()) {
-            tabConversation = mTabHost.newTabSpec(TAB_ITEM_CONVERSATION);
+            tabConversation = tabHost.newTabSpec(TAB_SPEC_CONVERSATION);
             initOrUpdateConversationTab();
             tabMessage = tabConversation;
         } else {
@@ -139,8 +137,8 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
     private TabSpec getDoctorPage() {
         TabSpec tabFind = null;
         if (mainPageConfig.hasDoctorPage()) {
-            tabFind = mTabHost.newTabSpec(TAB_ITEM_PATIENT);
-            tabFind.setIndicator(TAB_ITEM_PATIENT).setContent(
+            tabFind = tabHost.newTabSpec(TAB_SPEC_CONTACT);
+            tabFind.setIndicator(TAB_SPEC_CONTACT).setContent(
                     new Intent(this, TabSearchDoctorActivity.class));
         } else {
             // Temporarily not processed
@@ -152,8 +150,8 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
     private TabSpec getMinePage() {
         TabSpec tabMy = null;
         if (mainPageConfig.hasMinePage()) {
-            tabMy = mTabHost.newTabSpec(TAB_ITEM_MY);
-            tabMy.setIndicator(TAB_ITEM_MY).setContent(
+            tabMy = tabHost.newTabSpec(TAB_SPEC_PROFILE);
+            tabMy.setIndicator(TAB_SPEC_PROFILE).setContent(
                     new Intent(this, MineActivity.class));
         } else {
             // Temporarily not processed
@@ -164,22 +162,22 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
     private TabSpec getDiscoveryPage() {
         TabSpec tabDiscovery = null;
         if (mainPageConfig.hasDiscoveryPage()) {
-            tabDiscovery = mTabHost.newTabSpec(TAB_ITEM_DISCOVERY);
-            tabDiscovery.setIndicator(TAB_ITEM_DISCOVERY).setContent(
+            tabDiscovery = tabHost.newTabSpec(TAB_SPEC_EXPLORE);
+            tabDiscovery.setIndicator(TAB_SPEC_EXPLORE).setContent(
                     new Intent(this, DiscoveryActivity.class));
         } else {
             // Temporarily not processed
         }
         return tabDiscovery;
     }
-
-    private boolean initTabPanel(TabSpec tabSpec, View panel, View tabView, RadioClickListener listener) {
+    private boolean initTabPanel(TabSpec tabSpec, BadgeRadioButton panel, int labelId, int iconId,
+                                 RadioClickListener listener) {
         if (null == tabSpec) {
             panel.setVisibility(View.GONE);
             return false;
         } else {
-            mTabHost.addTab(tabSpec);
-            tabView.setOnClickListener(listener);
+            tabHost.addTab(tabSpec);
+            panel.setOnClickListener(labelId, iconId, listener);
             panel.setVisibility(View.VISIBLE);
         }
         return true;
@@ -191,62 +189,52 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
         RadioClickListener listener = new RadioClickListener();
         // Home page
         TabSpec tabNearby = getHomePage();
-        initTabPanel(tabNearby, radio_button_panel1, mRadioButton_1, listener);
+        initTabPanel(tabNearby, summaryBadgeRadio, R.string.tab_main, R.drawable.main_tab_home, listener);
 
         //message
         TabSpec tabMessage = getMessagePage();
-        initTabPanel(tabMessage, radio_button_panel2, mRadioButton_2, listener);
+        initTabPanel(tabMessage, conversationBadgeRadio, R.string.tab_message, R.drawable.main_tab_message, listener);
 
         //find doctor
         TabSpec tabDoctor = getDoctorPage();
-        initTabPanel(tabDoctor, radio_button_panel3, mRadioButton_3, listener);
+        initTabPanel(tabDoctor, contactBadgeRadio, R.string.tab_find_doctor, R.drawable.main_tab_search, listener);
 
         //discovery
         TabSpec tabDiscovery = getDiscoveryPage();
-        initTabPanel(tabDiscovery, radio_button_panel5, mRadioButton_5, listener);
+        initTabPanel(tabDiscovery, exploreBadgeRadio, R.string.tab_discovery, R.drawable.main_tab_search, listener);
 
         //me
         TabSpec tabMy = getMinePage();
-        initTabPanel(tabMy, radio_button_panel4, mRadioButton_4, listener);
+        initTabPanel(tabMy, profileBadgeRadio, R.string.tab_mine, R.drawable.main_tab_mine, listener);
     }
 
-    private static void setWhichActivity(int which) {
-        whichActivity = which;
+    private static void setActiveIndex(int which) {
+        activeIndex = which;
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putInt(WHICH_ACTIVITY, whichActivity);
+        outState.putInt(ACTIVE_INDEX_KEY, activeIndex);
     }
 
     private void initRadioButtons() {
-        switch (whichActivity) {
-            case RADIO_MAIN:
-                if (mRadioButton_1 != null) {
-                    radioClick(R.id.radio_button1);
-                }
+        switch (activeIndex) {
+            case INDEX_SUMMARY:
+                radioClick(summaryBadgeRadio);
                 break;
-            case RADIO_CONVERSATION:
-                if (mRadioButton_2 != null) {
-                    radioClick(R.id.radio_button2);
-                }
+            case INDEX_CONVERSATION:
+                radioClick(conversationBadgeRadio);
                 break;
-            case RADIO_PATIENT:
-                if (mRadioButton_3 != null) {
-                    radioClick(R.id.radio_button3);
-                }
+            case INDEX_CONTACT:
+                radioClick(contactBadgeRadio);
                 break;
-            case RADIO_DISCOVERY:
-                if (mRadioButton_5 != null) {
-                    radioClick(R.id.radio_button5);
-                }
+            case INDEX_EXPLORE:
+                radioClick(exploreBadgeRadio);
                 break;
-            case RADIO_MY:
-                if (mRadioButton_4 != null) {
-                    radioClick(R.id.radio_button4);
-                }
+            case INDEX_PROFILE:
+                radioClick(profileBadgeRadio);
                 break;
             default:
                 break;
@@ -262,8 +250,8 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
     }
 
     private void initSelectTab(Intent intent) {
-        setWhichActivity(RADIO_MAIN);
-        setWhichActivity(intent.getIntExtra(WHICH_ACTIVITY, RADIO_MAIN));
+        setActiveIndex(INDEX_SUMMARY);
+        setActiveIndex(intent.getIntExtra(ACTIVE_INDEX_KEY, INDEX_SUMMARY));
 
     }
 
@@ -278,13 +266,8 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
 
         if ("true".equals(docter)) {
             intent.removeExtra("callDocter");
-            mRadioButton_3.performClick();
+            contactBadgeRadio.performClick();
         }
-    }
-
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        radioClick(checkedId);
     }
 
 //    @Override
@@ -304,77 +287,10 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
         }
     }
 
-    private void radioClick(int viewid) {
-        switch (viewid) {
-            case R.id.radio_button1:
-                mTabHost.setCurrentTabByTag(TAB_ITEM_MAIN);
-                updateRadioButtons(RADIO_MAIN);
-                reportTabClickEvent(0);
-                break;
-            case R.id.radio_button2:
-                mTabHost.setCurrentTabByTag(TAB_ITEM_CONVERSATION);
-                updateRadioButtons(RADIO_CONVERSATION);
-                reportTabClickEvent(1);
-                break;
-            case R.id.radio_button3:
-                mTabHost.setCurrentTabByTag(TAB_ITEM_PATIENT);
-                updateRadioButtons(RADIO_PATIENT);
-                reportTabClickEvent(4);
-                break;
-            case R.id.radio_button4:
-                mTabHost.setCurrentTabByTag(TAB_ITEM_MY);
-                updateRadioButtons(RADIO_MY);
-                reportTabClickEvent(3);
-                break;
-            case R.id.radio_button5:
-                mTabHost.setCurrentTabByTag(TAB_ITEM_DISCOVERY);
-                updateRadioButtons(RADIO_DISCOVERY);
-                reportTabClickEvent(5);
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void updateRadioButtons(int i) {
-        setWhichActivity(i);
-        if (null != mCurrentButton) {
-            mCurrentButton.setChecked(false);
-        }
-        switch (i) {
-            case RADIO_MAIN:
-                mCurrentButton = mRadioButton_1;
-                break;
-            case RADIO_CONVERSATION:
-                mCurrentButton = mRadioButton_2;
-                break;
-            case RADIO_PATIENT:
-                mCurrentButton = mRadioButton_3;
-                break;
-            case RADIO_MY:
-                mCurrentButton = mRadioButton_4;
-                break;
-            case RADIO_DISCOVERY:
-                mCurrentButton = mRadioButton_5;
-                break;
-            default:
-                break;
-        }
-
-        if (null != mCurrentButton) {
-            mCurrentButton.setChecked(true);
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mTabHost = null;
-        mRadioButton_1 = null;
-        mRadioButton_2 = null;
-        mRadioButton_3 = null;
-        mRadioButton_4 = null;
-        mRadioButton_5 = null;
+        tabHost = null;
 
 //        AndroidEventManager.getInstance().removeEventListener(
 //                EventCode.LoginActivityLaunched, this);
@@ -386,9 +302,9 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            if ((System.currentTimeMillis() - mExitTime) > 3000) {
+            if ((System.currentTimeMillis() - exitInterval) > 3000) {
                 Toast.makeText(this, R.string.toast_exit, Toast.LENGTH_LONG).show();
-                mExitTime = System.currentTimeMillis();
+                exitInterval = System.currentTimeMillis();
             } else {
                 finish();
             }
@@ -398,8 +314,7 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
     }
 
     public void gotoSearchView() {
-//        updateRadioButtons(RADIO_PATIENT);
-        radioClick(R.id.radio_button3);
+        radioClick(contactBadgeRadio);
     }
 
 //    @Override
@@ -423,7 +338,7 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
      */
     private void initOrUpdateConversationTab() {
         if (tabConversation != null) {
-            tabConversation.setIndicator(TAB_ITEM_CONVERSATION).setContent(
+            tabConversation.setIndicator(TAB_SPEC_CONVERSATION).setContent(
                     new Intent(this, Message_TabActivity.class));
         }
     }
@@ -458,7 +373,55 @@ public class MainActivity extends TabActivity implements OnCheckedChangeListener
     protected void reportTabClickEvent(int tabIndex) {
 
     }
-    protected void bindUnreadCountTextView(int viewId) {
+    protected void bindUnreadCountTextView(BadgeRadioButton view) {
+        int viewId = view.findViewById(R.id.badge).getId();
+    }
 
+    // refactor tab view item.
+    private void radioClick(BadgeRadioButton view) {
+        radioClick(view.getId());
+    }
+
+    private void radioClick(int viewId) {
+        setSelectFlag(false);
+
+        switch (viewId) {
+            case R.id.summaryBadgeRadio:
+                tabHost.setCurrentTabByTag(TAB_SPEC_SUMMARY);
+                setActiveIndex(INDEX_SUMMARY);
+                reportTabClickEvent(EVENT_SUMMARY);
+                break;
+            case R.id.conversationBadgeRadio:
+                tabHost.setCurrentTabByTag(TAB_SPEC_CONVERSATION);
+                setActiveIndex(INDEX_CONVERSATION);
+                reportTabClickEvent(EVENT_CONVERSATION);
+                break;
+            case R.id.contactBadgeRadio:
+                tabHost.setCurrentTabByTag(TAB_SPEC_CONTACT);
+                setActiveIndex(INDEX_CONTACT);
+                reportTabClickEvent(EVENT_CONTACT);
+                break;
+            case R.id.exploreBadgeRadio:
+                tabHost.setCurrentTabByTag(TAB_SPEC_EXPLORE);
+                setActiveIndex(INDEX_EXPLORE);
+                reportTabClickEvent(EVENT_EXPLORE);
+                break;
+            case R.id.profileBadgeRadio:
+                tabHost.setCurrentTabByTag(TAB_SPEC_PROFILE);
+                setActiveIndex(INDEX_PROFILE);
+                reportTabClickEvent(EVENT_PROFILE);
+                break;
+            default:
+                break;
+        }
+
+        activeBadgeRadio = ButterKnife.findById(tabHost, viewId);
+        setSelectFlag(true);
+    }
+
+    private void setSelectFlag(boolean flag) {
+        if (null != activeBadgeRadio) {
+            activeBadgeRadio.setSelectFlag(flag);
+        }
     }
 }
