@@ -19,14 +19,14 @@
     <!--&lt;!&ndash; Main activity bottom tab style &ndash;&gt;-->
     <style name="main_tab_bottom">
         <item name="android:button">@null</item>
-        <item name="android:textSize">@dimen/tab_bar_text_size</item>
+        <item name="android:textSize">@dimen/badge_radio_text_size</item>
         <item name="android:textColor">@color/main_tab_text_color</item>
         <item name="android:ellipsize">end</item>
         <item name="android:gravity">bottom|center_horizontal</item>
         <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">@dimen/main_bottom_height</item>
-        <item name="android:paddingBottom">@dimen/tab_bar_text_padding_bottom</item>
-        <item name="android:paddingTop">@dimen/tab_bar_text_padding_bottom</item>
+        <item name="android:layout_height">@dimen/badge_radio_bar_height</item>
+        <item name="android:paddingBottom">@dimen/badge_radio_text_padding_bottom</item>
+        <item name="android:paddingTop">@dimen/badge_radio_text_padding_bottom</item>
         <item name="android:singleLine">true</item>
     </style>
 

@@ -8,8 +8,8 @@
         style="@style/main_tab_bottom"
         android:layout_width="match_parent"
         android:tag="radio_button"
-        android:background="@drawable/main_tab_message"
-        android:text="@string/tab_message"/>
+        android:background="@drawable/radio_bg_conversation"
+        android:text="@string/radio_label_conversation"/>
 
     <View
         android:id="@+id/anchor"
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/badge_margin_left"
         android:layout_toRightOf="@+id/anchor"
-        android:background="@drawable/unread_count_bg"
+        android:background="@drawable/badge_bg"
         android:gravity="center"
         android:singleLine="true"
         android:textColor="@color/white"

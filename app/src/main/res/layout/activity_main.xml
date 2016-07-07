@@ -43,9 +43,9 @@
                 <!--<RadioButton-->
                     <!--android:id="@+id/radio_button1"-->
                     <!--style="@style/main_tab_bottom"-->
-                    <!--android:background="@drawable/main_tab_home"-->
+                    <!--android:background="@drawable/radio_bg_summary"-->
                     <!--android:tag="radio_button0"-->
-                    <!--android:text="@string/tab_main"/>-->
+                    <!--android:text="@string/radio_label_summary"/>-->
             <!--</FrameLayout>-->
 
             <include layout="@layout/badge_radio_button"
@@ -82,9 +82,9 @@
                 <!--<RadioButton-->
                     <!--android:id="@+id/radio_button3"-->
                     <!--style="@style/main_tab_bottom"-->
-                    <!--android:background="@drawable/main_tab_search"-->
+                    <!--android:background="@drawable/radio_bg_explore"-->
                     <!--android:tag="radio_button2"-->
-                    <!--android:text="@string/tab_find_doctor"/>-->
+                    <!--android:text="@string/radio_label_contact"/>-->
             <!--</FrameLayout>-->
 
             <!--<FrameLayout-->
@@ -96,7 +96,7 @@
                 <!--<RadioButton-->
                     <!--android:id="@+id/radio_button5"-->
                     <!--style="@style/main_tab_bottom"-->
-                    <!--android:background="@drawable/main_tab_search"-->
+                    <!--android:background="@drawable/radio_bg_explore"-->
                     <!--android:tag="radio_button5"-->
                     <!--android:text="@string/tab_discovery" />-->
             <!--</FrameLayout>-->
@@ -110,7 +110,7 @@
                 <!--<RadioButton-->
                     <!--android:id="@+id/radio_button4"-->
                     <!--style="@style/main_tab_bottom"-->
-                    <!--android:background="@drawable/main_tab_mine"-->
+                    <!--android:background="@drawable/radio_bg_profile"-->
                     <!--android:tag="radio_button4"-->
                     <!--android:text="@string/tab_mine"/>-->
             <!--</FrameLayout>-->

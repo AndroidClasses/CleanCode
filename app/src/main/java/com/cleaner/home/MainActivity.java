@@ -3,7 +3,7 @@ package com.cleaner.home;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,14 +11,14 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
-import com.cleaner.config.MainPageConfig;
+import com.cleaner.config.PatientUtil;
 import com.cleaner.view.BadgeRadioButton;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MainActivity extends TabActivity {
+public class MainActivity extends TabActivity implements MainConfigContracts.ConfigView{
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @BindView(android.R.id.tabhost)
@@ -61,13 +61,13 @@ public class MainActivity extends TabActivity {
     private static final int EVENT_EXPLORE = 5;
     private static final int EVENT_PROFILE = 3;
 
-    private MainPageConfig mainPageConfig;
-
-    private BadgeRadioButton activeBadgeRadio;
-
-    private long exitInterval;
+    private final ExitingTrigger exitingTrigger = new ExitingTrigger();
+    private final ToastWrapper toastWrapper = new ToastWrapper(R.string.toast_exit, Toast.LENGTH_LONG);
 
     private Unbinder unbinder;
+    private BadgeRadioButton activeBadgeRadio;
+
+    private final RadioClickListener listener = new RadioClickListener();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +89,10 @@ public class MainActivity extends TabActivity {
 //        checkAndLoginXbkpIM();
 //        PatientApplication.getInstance().addActivity(this);
 
-        mainPageConfig = new MainPageConfig(this);
-
-        initTabs();
+        MainConfigContracts.ConfigPresenter configPresenter = new MainConfigPresenterImpl(this, parsePageConfig());
+        initSelectTab(getIntent());
+        initRadioButtons();
+        configPresenter.initTabs();
 
         //事件的监听
 //        AndroidEventManager.getInstance().addEventListener(
@@ -102,110 +103,6 @@ public class MainActivity extends TabActivity {
 //        //显示未读消息数
 //        setRecentChatUnreadNumber(RecentChatManager.getInstance()
 //                .getUnreadMessageTotalCount());
-    }
-
-    private TabSpec getHomePage() {
-        TabSpec tabNearby = null;
-        if (mainPageConfig.hasSummary()) {
-            tabNearby = tabHost.newTabSpec(TAB_SPEC_SUMMARY);
-            tabNearby.setIndicator(TAB_SPEC_SUMMARY).setContent(new Intent(this, SummaryActivity.class));
-        } else if (mainPageConfig.hasRecyclerSummary()) {
-            tabNearby = tabHost.newTabSpec(TAB_SPEC_SUMMARY);
-            tabNearby.setIndicator(TAB_SPEC_SUMMARY).setContent(new Intent(this, RecyclerSummaryActivity.class));
-        } else if (mainPageConfig.hasRecyclerSummaryV2()) {
-            tabNearby = tabHost.newTabSpec(TAB_SPEC_SUMMARY);
-            tabNearby.setIndicator(TAB_SPEC_SUMMARY).setContent(new Intent(this, RecyclerSummaryV2Activity.class));
-        } else {
-            // Temporarily not processed
-        }
-
-        return tabNearby;
-    }
-
-    private TabSpec getMessagePage() {
-        TabSpec tabMessage = null;
-        if (mainPageConfig.hasMessage()) {
-            tabConversation = tabHost.newTabSpec(TAB_SPEC_CONVERSATION);
-            initOrUpdateConversationTab();
-            tabMessage = tabConversation;
-        } else {
-            Log.e(TAG, "message is null");
-        }
-        return tabMessage;
-    }
-
-    private TabSpec getDoctorPage() {
-        TabSpec tabFind = null;
-        if (mainPageConfig.hasDoctorPage()) {
-            tabFind = tabHost.newTabSpec(TAB_SPEC_CONTACT);
-            tabFind.setIndicator(TAB_SPEC_CONTACT).setContent(
-                    new Intent(this, TabSearchDoctorActivity.class));
-        } else {
-            // Temporarily not processed
-        }
-
-        return tabFind;
-    }
-
-    private TabSpec getMinePage() {
-        TabSpec tabMy = null;
-        if (mainPageConfig.hasMinePage()) {
-            tabMy = tabHost.newTabSpec(TAB_SPEC_PROFILE);
-            tabMy.setIndicator(TAB_SPEC_PROFILE).setContent(
-                    new Intent(this, MineActivity.class));
-        } else {
-            // Temporarily not processed
-        }
-        return tabMy;
-    }
-
-    private TabSpec getDiscoveryPage() {
-        TabSpec tabDiscovery = null;
-        if (mainPageConfig.hasDiscoveryPage()) {
-            tabDiscovery = tabHost.newTabSpec(TAB_SPEC_EXPLORE);
-            tabDiscovery.setIndicator(TAB_SPEC_EXPLORE).setContent(
-                    new Intent(this, DiscoveryActivity.class));
-        } else {
-            // Temporarily not processed
-        }
-        return tabDiscovery;
-    }
-    private boolean initTabPanel(TabSpec tabSpec, BadgeRadioButton panel, int labelId, int iconId,
-                                 RadioClickListener listener) {
-        if (null == tabSpec) {
-            panel.setVisibility(View.GONE);
-            return false;
-        } else {
-            tabHost.addTab(tabSpec);
-            panel.setOnClickListener(labelId, iconId, listener);
-            panel.setVisibility(View.VISIBLE);
-        }
-        return true;
-    }
-
-    private void initTabs() {
-        initSelectTab(getIntent());
-        initRadioButtons();
-        RadioClickListener listener = new RadioClickListener();
-        // Home page
-        TabSpec tabNearby = getHomePage();
-        initTabPanel(tabNearby, summaryBadgeRadio, R.string.tab_main, R.drawable.main_tab_home, listener);
-
-        //message
-        TabSpec tabMessage = getMessagePage();
-        initTabPanel(tabMessage, conversationBadgeRadio, R.string.tab_message, R.drawable.main_tab_message, listener);
-
-        //find doctor
-        TabSpec tabDoctor = getDoctorPage();
-        initTabPanel(tabDoctor, contactBadgeRadio, R.string.tab_find_doctor, R.drawable.main_tab_search, listener);
-
-        //discovery
-        TabSpec tabDiscovery = getDiscoveryPage();
-        initTabPanel(tabDiscovery, exploreBadgeRadio, R.string.tab_discovery, R.drawable.main_tab_search, listener);
-
-        //me
-        TabSpec tabMy = getMinePage();
-        initTabPanel(tabMy, profileBadgeRadio, R.string.tab_mine, R.drawable.main_tab_mine, listener);
     }
 
     private static void setActiveIndex(int which) {
@@ -262,9 +159,9 @@ public class MainActivity extends TabActivity {
         //如果是“我的医生”页，右上角“找医生”跳转过来的，手动触发“找医生界面”
         Intent intent = getIntent();
 
-        String docter = intent.getStringExtra("callDocter");
+        String doctor = intent.getStringExtra("callDocter");
 
-        if ("true".equals(docter)) {
+        if ("true".equals(doctor)) {
             intent.removeExtra("callDocter");
             contactBadgeRadio.performClick();
         }
@@ -279,6 +176,122 @@ public class MainActivity extends TabActivity {
 //                    .getUnreadMessageTotalCount());
 //        }
 //    }
+
+    private MainConfigContracts.PageConfig parsePageConfig() {
+        String pageConfigKey = MainPageConfigImpl.getPageConfigKey();
+        String preferredConfig = PatientUtil.loadConfigItem(this, pageConfigKey);
+        return new MainPageConfigImpl(preferredConfig);
+    }
+
+    @Override
+    public void addSummaryTab() {
+        initHomePageTab(SummaryActivity.class);
+    }
+
+    @Override
+    public void addRecyclerSummaryTab() {
+        initHomePageTab(RecyclerSummaryActivity.class);
+    }
+
+    @Override
+    public void addRecyclerSummaryV2Tab() {
+        initHomePageTab(RecyclerSummaryV2Activity.class);
+    }
+
+    @Override
+    public void addUnknownSummaryTab() {
+        // do nothing to prevent adding any HOME tab
+        hideTabPanel(summaryBadgeRadio);
+    }
+
+    private void initHomePageTab(@NonNull Class<?> cls) {
+        TabSpec tabNearby = tabHost.newTabSpec(TAB_SPEC_SUMMARY);
+        tabNearby.setIndicator(TAB_SPEC_SUMMARY).setContent(new Intent(this, cls));
+        initTabPanel(tabNearby, summaryBadgeRadio, R.string.radio_label_summary, R.drawable.radio_bg_summary, listener);
+    }
+
+//    private boolean initTabPanel(TabSpec tabSpec, View panel, View tabView, RadioClickListener listener) {
+//        if (null == tabSpec) {
+//            panel.setVisibility(View.GONE);
+//            return false;
+//        } else {
+//            tabHost.addTab(tabSpec);
+//            tabView.setOnClickListener(listener);
+//            panel.setVisibility(View.VISIBLE);
+//        }
+//        return true;
+//    }
+
+    private boolean initTabPanel(TabSpec tabSpec, BadgeRadioButton panel, int labelId, int iconId,
+                                 RadioClickListener listener) {
+//        if (null == tabSpec) {
+//            panel.setVisibility(View.GONE);
+//            return false;
+//        } else {
+            tabHost.addTab(tabSpec);
+            panel.setOnClickListener(labelId, iconId, listener);
+            panel.setVisibility(View.VISIBLE);
+//        }
+        return true;
+    }
+
+    private void hideTabPanel(@NonNull BadgeRadioButton panel) {
+        panel.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void addMessageTab() {
+        tabConversation = tabHost.newTabSpec(TAB_SPEC_CONVERSATION);
+        initOrUpdateConversationTab();
+        initTabPanel(tabConversation, conversationBadgeRadio, R.string.radio_label_conversation, R.drawable.radio_bg_conversation, listener);
+    }
+
+    @Override
+    public void addUnknownMessageTab() {
+        // do nothing to prevent adding any MESSAGE tab
+        hideTabPanel(conversationBadgeRadio);
+    }
+
+    @Override
+    public void addDoctorTab() {
+        TabSpec tabDoctor = tabHost.newTabSpec(TAB_SPEC_CONTACT);
+        tabDoctor.setIndicator(TAB_SPEC_CONTACT).setContent(
+                new Intent(this, TabSearchDoctorActivity.class));
+        initTabPanel(tabDoctor, contactBadgeRadio, R.string.radio_label_contact, R.drawable.radio_bg_explore, listener);
+    }
+
+    @Override
+    public void addUnknownDoctorTab() {
+        // do nothing to prevent adding any DOCTOR tab
+        hideTabPanel(contactBadgeRadio);
+    }
+
+    @Override
+    public void addMineTab() {
+        TabSpec tabMine = tabHost.newTabSpec(TAB_SPEC_PROFILE);
+        tabMine.setIndicator(TAB_SPEC_PROFILE).setContent(new Intent(this, MineActivity.class));
+        initTabPanel(tabMine, profileBadgeRadio, R.string.radio_label_profile, R.drawable.radio_bg_profile, listener);
+    }
+
+    @Override
+    public void addUnknownMineTab() {
+        // do nothing to prevent adding any MINE tab
+        hideTabPanel(profileBadgeRadio);
+    }
+
+    @Override
+    public void addDiscoveryTab() {
+        TabSpec tabDiscovery = tabHost.newTabSpec(TAB_SPEC_EXPLORE);
+        tabDiscovery.setIndicator(TAB_SPEC_EXPLORE).setContent(
+                new Intent(this, DiscoveryActivity.class));
+        initTabPanel(tabDiscovery, exploreBadgeRadio, R.string.radio_label_explore, R.drawable.radio_bg_explore, listener);
+    }
+
+    @Override
+    public void addUnknownDiscoveryTab() {
+        // do nothing to prevent adding any DISCOVERY tab
+        hideTabPanel(exploreBadgeRadio);
+    }
 
     private class RadioClickListener implements OnClickListener {
         @Override
@@ -297,17 +310,18 @@ public class MainActivity extends TabActivity {
 //        AndroidEventManager.getInstance().removeEventListener(
 //                EventCode.UnreadMessageCountChanged, this);
         unbinder.unbind();
+        toastWrapper.cancel();
     }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            if ((System.currentTimeMillis() - exitInterval) > 3000) {
-                Toast.makeText(this, R.string.toast_exit, Toast.LENGTH_LONG).show();
-                exitInterval = System.currentTimeMillis();
+        if (KeyEventHelper.isBackKeyDown(event)) {
+            if (exitingTrigger.testExpired(System.currentTimeMillis())) {
+                toastWrapper.show(this);
             } else {
                 finish();
             }
+
             return true;
         }
         return super.dispatchKeyEvent(event);
@@ -374,7 +388,7 @@ public class MainActivity extends TabActivity {
 
     }
     protected void bindUnreadCountTextView(BadgeRadioButton view) {
-        int viewId = view.findViewById(R.id.badge).getId();
+        //bindUnreadCountTextView(view, R.id.badge);
     }
 
     // refactor tab view item.
