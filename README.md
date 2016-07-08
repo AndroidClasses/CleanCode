@@ -10,6 +10,8 @@ Home | Message | Find | Discovery | Me |
 ![](https://github.com/AndroidClasses/CleanCode/blob/master/app/src/main/res/drawable-xhdpi/tab_main_f.9.png)|![](https://github.com/AndroidClasses/CleanCode/blob/master/app/src/main/res/drawable-xhdpi/tab_message_f.9.png)|![](https://github.com/AndroidClasses/CleanCode/blob/master/app/src/main/res/drawable-xhdpi/tab_search_f.9.png)|![](https://github.com/AndroidClasses/CleanCode/blob/master/app/src/main/res/drawable-xhdpi/tab_search_f.9.png)|![](https://github.com/AndroidClasses/CleanCode/blob/master/app/src/main/res/drawable-xhdpi/tab__mine_f.9.png)
 U can check the sample app [here](https://github.com/AndroidClasses/CleanCode/tree/master/app).
 
+* CI (Travis) - [![Build Status](https://travis-ci.org/AndroidClasses/CleanCode.svg?branch=master)](https://travis-ci.org/AndroidClasses/CleanCode)
+
 Tabs configuration
 ------------
 

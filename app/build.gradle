@@ -1,35 +1,37 @@
 apply plugin: 'com.android.application'
+//apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
 
     defaultConfig {
         applicationId "com.cleaner.home"
-        minSdkVersion 11
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.code // Notice that you may want to use BUILD_NUMBER from CI in real project with own CI.
+        versionName versions.name
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    dependencies {
+        compile fileTree(include: ['*.jar'], dir: 'libs')
+//        compile project(':navigationtabbar')
+//        compile 'com.github.devlight.navigationtabbar:navigationtabbar:1.2.3'
+
+        compile libraries.supportAppCompat
+        compile libraries.supportDesign
+
+        compile libraries.butterKnife
+        apt libraries.butterKnifeCompiler
+
+        compile libraries.fastJson
+    }
 }
 
-dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    //    compile project(':navigationtabbar')
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:design:23.2.1'
-    compile 'com.android.support:support-v4:23.2.1'
-    compile 'com.github.devlight.navigationtabbar:navigationtabbar:1.2.3'
-    compile 'com.alibaba:fastjson:1.2.13'
-//    compile 'org.projectlombok:lombok:1.16.8'
-//    compile 'javax.annotation:javax.annotation-api:1.2'
-    compile 'com.jakewharton:butterknife:8.1.0'
-    apt 'com.jakewharton:butterknife-compiler:8.1.0'
-}
