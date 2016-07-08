@@ -11,7 +11,7 @@ import butterknife.Unbinder;
 /**
  * Created by yangfeng on 16-7-5.
  */
-public class BaseTabActivity extends FragmentActivity {
+abstract public class BaseTabActivity extends FragmentActivity {
     @BindView(R.id.dummy_textView)
     TextView mDummyText;
 
