@@ -35,7 +35,8 @@ android {
     }
 
     lintOptions {
-        disable 'InvalidPackage'
+//        disable 'InvalidPackage'
+        warning 'InvalidPackage'
 //        lintConfig file("lint.xml")
 //        // set to true to turn off analysis progress reporting by lint
 //        quiet true
