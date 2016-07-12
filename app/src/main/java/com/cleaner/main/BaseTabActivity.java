@@ -1,4 +1,4 @@
-package com.cleaner.home;
+package com.cleaner.main;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;

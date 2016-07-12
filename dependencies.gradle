@@ -50,6 +50,7 @@ ext.versions = [
         supportTestRunner            : '0.5',
 
         fastJson                     : '1.2.7',
+        javaxAnnotation              : '10.0-b28',
 ]
 
 ext.gradlePlugins = [
@@ -120,4 +121,5 @@ ext.libraries = [
         rxjavaAndroid           : "io.reactivex:rxandroid:$versions.rxAndroid",
 
         fastJson                : "com.alibaba:fastjson:$versions.fastJson",
+        javaxAnnotation         : "org.glassfish:javax.annotation:$versions.javaxAnnotation",
 ]

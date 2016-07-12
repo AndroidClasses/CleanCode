@@ -8,7 +8,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cleaner.home.R;
+import com.cleaner.main.R;
 
 /**
  * Created by yangfeng on 16-7-7.

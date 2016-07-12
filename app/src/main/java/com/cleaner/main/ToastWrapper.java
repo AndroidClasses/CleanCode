@@ -1,4 +1,4 @@
-package com.cleaner.home;
+package com.cleaner.main;
 
 import android.content.Context;
 import android.widget.Toast;

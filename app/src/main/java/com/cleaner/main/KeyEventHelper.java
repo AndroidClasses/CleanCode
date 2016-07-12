@@ -1,4 +1,4 @@
-package com.cleaner.home;
+package com.cleaner.main;
 
 import android.view.KeyEvent;
 

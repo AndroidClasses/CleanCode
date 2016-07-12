@@ -1,8 +1,6 @@
-package com.cleaner.home;
+package com.cleaner.config;
 
 import android.text.TextUtils;
-
-import com.cleaner.config.BaseConstantDef;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,7 +8,7 @@ import java.util.List;
 /**
  * Created by yangfeng on 16-6-29.
  */
-public class MainPageConfigImpl implements MainConfigContracts.PageConfig {
+public class MainPageConfigImpl implements PageConfig {
     private int summaryVersion = VERSION_NONE;
     private int conversationVersion = VERSION_NONE;
     private int contactVersion = VERSION_NONE;

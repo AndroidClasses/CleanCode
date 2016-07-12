@@ -1,13 +1,19 @@
-package com.cleaner.home;
+package com.cleaner.main;
+
+import com.cleaner.config.PageConfig;
+import com.cleaner.config.ConfigurationRepository;
+
+import javax.inject.Inject;
 
 /**
  * Created by yangfeng on 16-6-29.
  */
 public class MainConfigPresenterImpl implements MainConfigContracts.ConfigPresenter {
     private final MainConfigContracts.ConfigView view;
-    private final MainConfigContracts.PageConfig pageConfig;
+    private final PageConfig pageConfig;
 
-    public MainConfigPresenterImpl(MainConfigContracts.ConfigView view, MainConfigContracts.PageConfig config) {
+    @Inject
+    public MainConfigPresenterImpl(ConfigurationRepository config, MainConfigContracts.ConfigView view) {
         this.view = view;
         this.pageConfig = config;
     }

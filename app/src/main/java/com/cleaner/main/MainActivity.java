@@ -1,4 +1,4 @@
-package com.cleaner.home;
+package com.cleaner.main;
 
 import android.app.TabActivity;
 import android.content.Intent;
@@ -11,8 +11,10 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.Toast;
 
-import com.cleaner.config.PatientUtil;
+import com.cleaner.CleanCodeApplication;
 import com.cleaner.view.BadgeRadioButton;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,12 +71,21 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
 
     private final RadioClickListener listener = new RadioClickListener();
 
+
+    @Inject MainConfigPresenterImpl configPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             setActiveIndex(savedInstanceState.getInt(ACTIVE_INDEX_KEY, INDEX_SUMMARY));
         }
+
+        // Create the presenter
+        DaggerMainConfigComponent.builder()
+                .configurationRepositoryComponent(((CleanCodeApplication) getApplication()).getConfigurationRepositoryComponent())
+                .mainConfigPresenterModule(new MainConfigPresenterModule(this)).build()
+                .inject(this);
 
         setContentView(R.layout.activity_main);
     }
@@ -89,7 +100,8 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
 //        checkAndLoginXbkpIM();
 //        PatientApplication.getInstance().addActivity(this);
 
-        MainConfigContracts.ConfigPresenter configPresenter = new MainConfigPresenterImpl(this, parsePageConfig());
+//        MainConfigContracts.ConfigPresenter configPresenter = new MainConfigPresenterImpl(this, pageConfig);
+
         initSelectTab(getIntent());
         initRadioButtons();
         configPresenter.initTabs();
@@ -177,11 +189,11 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
 //        }
 //    }
 
-    private MainConfigContracts.PageConfig parsePageConfig() {
-        String pageConfigKey = MainPageConfigImpl.getPageConfigKey();
-        String preferredConfig = PatientUtil.loadConfigItem(this, pageConfigKey);
-        return new MainPageConfigImpl(preferredConfig);
-    }
+//    private PageConfig parsePageConfig() {
+//        String pageConfigKey = MainPageConfigImpl.getPageConfigKey();
+//        String preferredConfig = PatientUtil.loadConfigItem(this, pageConfigKey);
+//        return new MainPageConfigImpl(preferredConfig);
+//    }
 
     @Override
     public void addSummaryTab() {
