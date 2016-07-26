@@ -83,7 +83,7 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
 
         // Create the presenter
         DaggerMainConfigComponent.builder()
-                .configurationRepositoryComponent(((CleanCodeApplication) getApplication()).getConfigurationRepositoryComponent())
+                .configurationRepositoryComponent(CleanCodeApplication.get(this).getConfigurationRepositoryComponent())
                 .mainConfigPresenterModule(new MainConfigPresenterModule(this)).build()
                 .inject(this);
 
