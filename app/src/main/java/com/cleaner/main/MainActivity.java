@@ -357,7 +357,6 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
     }
 
     private void initBottomTabs() {
-        root = (RadioGroup) findViewById(R.id.main_radio);
         root.check(R.id.summaryBadgeRadio);
         root.setOnCheckedChangeListener(this);
     }
