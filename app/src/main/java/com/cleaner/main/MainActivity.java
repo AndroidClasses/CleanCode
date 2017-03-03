@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.cleaner.CleanCodeApplication;
@@ -24,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MainActivity extends AppCompatActivity implements MainConfigContracts.ConfigView, RadioGroup.OnCheckedChangeListener{
+public class MainActivity extends AppCompatActivity implements MainConfigContracts.ConfigView, View.OnClickListener{
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @BindView(R.id.summaryBadgeRadio)
@@ -42,24 +41,7 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
     @BindView(R.id.profileBadgeRadio)
     BadgeRadioButton profileBadgeRadio;
 
-    @BindView(R.id.main_radio)
-    RadioGroup root;
-
-//    private static final int INDEX_SUMMARY = 0;
-//    private static final int INDEX_CONVERSATION = 1;
-//    private static final int INDEX_CONTACT = 2;
-//    private static final int INDEX_EXPLORE = 3;
-//    private static final int INDEX_PROFILE = 4;
-//    private static int activeIndex = INDEX_SUMMARY;
-//
-//    private static final String ACTIVE_INDEX_KEY = "ACTIVE_INDEX_KEY";
-//
-//    private static final String TAB_SPEC_SUMMARY = "TAB_SPEC_SUMMARY";
-//    private static final String TAB_SPEC_CONVERSATION = "TAB_SPEC_CONVERSATION";
-//    private static final String TAB_SPEC_CONTACT = "TAB_SPEC_CONTACT";
-//    private static final String TAB_SPEC_EXPLORE = "TAB_SPEC_EXPLORE";
-//    private static final String TAB_SPEC_PROFILE = "TAB_SPEC_PROFILE";
-//    private TabSpec tabConversation;
+    private BadgeRadioButton currentButton;
 
     private static final int EVENT_SUMMARY = 0;
     private static final int EVENT_CONVERSATION = 1;
@@ -95,22 +77,8 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
 
         bindUnreadCountTextView(conversationBadgeRadio);
 
-//        checkAndLoginXbkpIM();
-//        PatientApplication.getInstance().addActivity(this);
-
-//        MainConfigContracts.ConfigPresenter configPresenter = new MainConfigPresenterImpl(this, pageConfig);
-
         configPresenter.initTabs();
 
-        //事件的监听
-//        AndroidEventManager.getInstance().addEventListener(
-//                EventCode.LoginActivityLaunched, this, false);
-//        AndroidEventManager.getInstance().addEventListener(
-//                EventCode.UnreadMessageCountChanged, this, false);
-//
-//        //显示未读消息数
-//        setRecentChatUnreadNumber(RecentChatManager.getInstance()
-//                .getUnreadMessageTotalCount());
         initContents();
         initBottomTabs();
     }
@@ -144,22 +112,6 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
         }
     }
 
-//    @Override
-//    public void eventRunEnd(Event arg0) {
-//        if (arg0.getEventCode() == EventCode.LoginActivityLaunched) {
-//            finish();
-//        } else if (arg0.getEventCode() == EventCode.UnreadMessageCountChanged) {
-//            setRecentChatUnreadNumber(RecentChatManager.getInstance()
-//                    .getUnreadMessageTotalCount());
-//        }
-//    }
-
-//    private PageConfig parsePageConfig() {
-//        String pageConfigKey = MainPageConfigImpl.getPageConfigKey();
-//        String preferredConfig = PatientUtil.loadConfigItem(this, pageConfigKey);
-//        return new MainPageConfigImpl(preferredConfig);
-//    }
-
     @Override
     public void addSummaryTab() {
         initHomePageTab(SummaryActivity.class);
@@ -186,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
     }
 
     private boolean initTabPanel(BadgeRadioButton panel, int labelId, int iconId) {
-        panel.setOnClickListener(labelId, iconId);
+        panel.setOnClickListener(labelId, iconId, this);
         panel.setVisibility(View.VISIBLE);
         return true;
     }
@@ -261,50 +213,8 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
     }
 
     public void gotoSearchView() {
-        root.check(contactBadgeRadio.getId());
+        contactBadgeRadio.performClick();
     }
-
-//    @Override
-//    protected String getRoleType() {
-//        return IntentUtils.getRoleType();
-//    }
-//
-//    @Override
-//    protected void gotoLoginActivity() {
-//        IntentUtils.gotoLoginActivity(this, true);
-//    }
-
-//    private void checkAndLoginXbkpIM() {
-//        if (IMApplication.getInstance().isMyServerLogined()) {
-//            DemoApplication.loginIM();
-//        }
-//    }
-
-    /**
-     * 初始化或者更新消息tab页
-     */
-//    @Override
-//    protected void onLoginCompleted(String result) {
-//        super.onLoginCompleted(result);
-//        checkAndLoginXbkpIM();
-//
-//        //同步设置免打扰的讨论组
-//        requestGroupChatSetting();
-//
-//    }
-//
-//    @Override
-//    protected void switchConversationTab(int originalvalue) {
-//        super.switchConversationTab(originalvalue);
-//        int currentValue = BaseConstantDef.USED_XB_VALUE;
-//        if (originalvalue != 0) {
-//            if (originalvalue == currentValue) {
-//                Logger.i("used same im , no need switch tab");
-//            } else {
-//                initOrUpdateConversationTab();
-//            }
-//        }
-//    }
 
     // dumb override methods
     protected void parseNewIntent(Intent intent) {
@@ -318,8 +228,14 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
     }
 
     @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        switch (checkedId) {
+    public void onClick(View v) {
+        if (v.getId() == currentButton.getId()) {
+            return;
+        }
+
+        currentButton.setSelectFlag(false);
+
+        switch (v.getId()) {
             case R.id.summaryBadgeRadio:
                 activateSummary();
                 reportTabClickEvent(EVENT_SUMMARY);
@@ -342,8 +258,10 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
                 break;
             default:
                 showUnknownTabError();
-                break;
+                return;
         }
+
+        currentButton = (BadgeRadioButton) v;
     }
 
     private void initContents() {
@@ -357,8 +275,10 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
     }
 
     private void initBottomTabs() {
-        root.check(R.id.summaryBadgeRadio);
-        root.setOnCheckedChangeListener(this);
+//        root.check(R.id.summaryBadgeRadio);
+//        root.setOnCheckedChangeListener(this);
+        currentButton = summaryBadgeRadio;
+        currentButton.performClick();
     }
 
     private void activateSummary() {
