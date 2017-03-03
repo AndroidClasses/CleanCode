@@ -2,9 +2,7 @@ package com.cleaner.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -13,26 +11,17 @@ import com.cleaner.main.R;
 /**
  * Created by yangfeng on 16-7-7.
  */
-public class BadgeRadioButton extends RelativeLayout implements RadioGroup.OnCheckedChangeListener {
+public class BadgeRadioButton extends RelativeLayout {
     private RadioButton radioButton;
     private TextView badgeView;
 
     private int labelId;
     private int iconId;
 
-    private OnClickListener clickListener;
-    public void setOnClickListener(int labelId, int iconId, OnClickListener l) {
-        super.setOnClickListener(l);
+    public void setOnClickListener(int labelId, int iconId) {
         this.labelId = labelId;
         this.iconId = iconId;
         checkAndDisplay();
-        this.clickListener = l;
-    }
-
-    private void onDelegateClick() {
-        if (null != clickListener) {
-            clickListener.onClick(this);
-        }
     }
 
     public BadgeRadioButton(Context context) {
@@ -58,12 +47,6 @@ public class BadgeRadioButton extends RelativeLayout implements RadioGroup.OnChe
         if (null == radioButton) {
             throw new IllegalStateException("RadioButton with id name 'radio' was not found.");
         }
-        radioButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onDelegateClick();
-            }
-        });
         badgeView = (TextView) findViewById(R.id.badge);
         if (null == badgeView) {
             throw new IllegalStateException("TextView with id name 'badge' was not found.");
@@ -85,11 +68,6 @@ public class BadgeRadioButton extends RelativeLayout implements RadioGroup.OnChe
 
     public void setSelectFlag(boolean select) {
         radioButton.setChecked(select);
-    }
-
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        onDelegateClick();
     }
 
     @Override

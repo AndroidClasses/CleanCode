@@ -1,17 +1,21 @@
 package com.cleaner.main;
 
-import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.TabHost;
-import android.widget.TabHost.TabSpec;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.cleaner.CleanCodeApplication;
+import com.cleaner.main.fragments.ChatListFragment;
+import com.cleaner.main.fragments.ContactListFragment;
+import com.cleaner.main.fragments.ExploreFragment;
+import com.cleaner.main.fragments.ProfileFragment;
+import com.cleaner.main.fragments.SummaryFragment;
 import com.cleaner.view.BadgeRadioButton;
 
 import javax.inject.Inject;
@@ -20,11 +24,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class MainActivity extends TabActivity implements MainConfigContracts.ConfigView{
+public class MainActivity extends AppCompatActivity implements MainConfigContracts.ConfigView, RadioGroup.OnCheckedChangeListener{
     private static final String TAG = MainActivity.class.getSimpleName();
-
-    @BindView(android.R.id.tabhost)
-    TabHost tabHost;
 
     @BindView(R.id.summaryBadgeRadio)
     BadgeRadioButton summaryBadgeRadio;
@@ -41,21 +42,24 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
     @BindView(R.id.profileBadgeRadio)
     BadgeRadioButton profileBadgeRadio;
 
-    private static final int INDEX_SUMMARY = 0;
-    private static final int INDEX_CONVERSATION = 1;
-    private static final int INDEX_CONTACT = 2;
-    private static final int INDEX_EXPLORE = 3;
-    private static final int INDEX_PROFILE = 4;
-    private static int activeIndex = INDEX_SUMMARY;
+    @BindView(R.id.main_radio)
+    RadioGroup root;
 
-    private static final String ACTIVE_INDEX_KEY = "ACTIVE_INDEX_KEY";
-
-    private static final String TAB_SPEC_SUMMARY = "TAB_SPEC_SUMMARY";
-    private static final String TAB_SPEC_CONVERSATION = "TAB_SPEC_CONVERSATION";
-    private static final String TAB_SPEC_CONTACT = "TAB_SPEC_CONTACT";
-    private static final String TAB_SPEC_EXPLORE = "TAB_SPEC_EXPLORE";
-    private static final String TAB_SPEC_PROFILE = "TAB_SPEC_PROFILE";
-    private TabSpec tabConversation;
+//    private static final int INDEX_SUMMARY = 0;
+//    private static final int INDEX_CONVERSATION = 1;
+//    private static final int INDEX_CONTACT = 2;
+//    private static final int INDEX_EXPLORE = 3;
+//    private static final int INDEX_PROFILE = 4;
+//    private static int activeIndex = INDEX_SUMMARY;
+//
+//    private static final String ACTIVE_INDEX_KEY = "ACTIVE_INDEX_KEY";
+//
+//    private static final String TAB_SPEC_SUMMARY = "TAB_SPEC_SUMMARY";
+//    private static final String TAB_SPEC_CONVERSATION = "TAB_SPEC_CONVERSATION";
+//    private static final String TAB_SPEC_CONTACT = "TAB_SPEC_CONTACT";
+//    private static final String TAB_SPEC_EXPLORE = "TAB_SPEC_EXPLORE";
+//    private static final String TAB_SPEC_PROFILE = "TAB_SPEC_PROFILE";
+//    private TabSpec tabConversation;
 
     private static final int EVENT_SUMMARY = 0;
     private static final int EVENT_CONVERSATION = 1;
@@ -67,9 +71,6 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
     private final ToastWrapper toastWrapper = new ToastWrapper(R.string.toast_exit, Toast.LENGTH_LONG);
 
     private Unbinder unbinder;
-    private BadgeRadioButton activeBadgeRadio;
-
-    private final RadioClickListener listener = new RadioClickListener();
 
 
     @Inject MainConfigPresenterImpl configPresenter;
@@ -77,9 +78,6 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            setActiveIndex(savedInstanceState.getInt(ACTIVE_INDEX_KEY, INDEX_SUMMARY));
-        }
 
         // Create the presenter
         DaggerMainConfigComponent.builder()
@@ -102,8 +100,6 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
 
 //        MainConfigContracts.ConfigPresenter configPresenter = new MainConfigPresenterImpl(this, pageConfig);
 
-        initSelectTab(getIntent());
-        initRadioButtons();
         configPresenter.initTabs();
 
         //事件的监听
@@ -115,53 +111,22 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
 //        //显示未读消息数
 //        setRecentChatUnreadNumber(RecentChatManager.getInstance()
 //                .getUnreadMessageTotalCount());
-    }
-
-    private static void setActiveIndex(int which) {
-        activeIndex = which;
+        initContents();
+        initBottomTabs();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        outState.putInt(ACTIVE_INDEX_KEY, activeIndex);
-    }
-
-    private void initRadioButtons() {
-        switch (activeIndex) {
-            case INDEX_SUMMARY:
-                radioClick(summaryBadgeRadio);
-                break;
-            case INDEX_CONVERSATION:
-                radioClick(conversationBadgeRadio);
-                break;
-            case INDEX_CONTACT:
-                radioClick(contactBadgeRadio);
-                break;
-            case INDEX_EXPLORE:
-                radioClick(exploreBadgeRadio);
-                break;
-            case INDEX_PROFILE:
-                radioClick(profileBadgeRadio);
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         parseNewIntent(intent);
-        initSelectTab(intent);
-        initRadioButtons();
-    }
 
-    private void initSelectTab(Intent intent) {
-        setActiveIndex(INDEX_SUMMARY);
-        setActiveIndex(intent.getIntExtra(ACTIVE_INDEX_KEY, INDEX_SUMMARY));
-
+        initContents();
+        initBottomTabs();
     }
 
     @Override
@@ -217,33 +182,12 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
     }
 
     private void initHomePageTab(@NonNull Class<?> cls) {
-        TabSpec tabNearby = tabHost.newTabSpec(TAB_SPEC_SUMMARY);
-        tabNearby.setIndicator(TAB_SPEC_SUMMARY).setContent(new Intent(this, cls));
-        initTabPanel(tabNearby, summaryBadgeRadio, R.string.radio_label_summary, R.drawable.radio_bg_summary, listener);
+        initTabPanel(summaryBadgeRadio, R.string.radio_label_summary, R.drawable.radio_bg_summary);
     }
 
-//    private boolean initTabPanel(TabSpec tabSpec, View panel, View tabView, RadioClickListener listener) {
-//        if (null == tabSpec) {
-//            panel.setVisibility(View.GONE);
-//            return false;
-//        } else {
-//            tabHost.addTab(tabSpec);
-//            tabView.setOnClickListener(listener);
-//            panel.setVisibility(View.VISIBLE);
-//        }
-//        return true;
-//    }
-
-    private boolean initTabPanel(TabSpec tabSpec, BadgeRadioButton panel, int labelId, int iconId,
-                                 RadioClickListener listener) {
-//        if (null == tabSpec) {
-//            panel.setVisibility(View.GONE);
-//            return false;
-//        } else {
-            tabHost.addTab(tabSpec);
-            panel.setOnClickListener(labelId, iconId, listener);
-            panel.setVisibility(View.VISIBLE);
-//        }
+    private boolean initTabPanel(BadgeRadioButton panel, int labelId, int iconId) {
+        panel.setOnClickListener(labelId, iconId);
+        panel.setVisibility(View.VISIBLE);
         return true;
     }
 
@@ -253,9 +197,7 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
 
     @Override
     public void addMessageTab() {
-        tabConversation = tabHost.newTabSpec(TAB_SPEC_CONVERSATION);
-        initOrUpdateConversationTab();
-        initTabPanel(tabConversation, conversationBadgeRadio, R.string.radio_label_conversation, R.drawable.radio_bg_conversation, listener);
+        initTabPanel(conversationBadgeRadio, R.string.radio_label_conversation, R.drawable.radio_bg_conversation);
     }
 
     @Override
@@ -266,10 +208,7 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
 
     @Override
     public void addDoctorTab() {
-        TabSpec tabDoctor = tabHost.newTabSpec(TAB_SPEC_CONTACT);
-        tabDoctor.setIndicator(TAB_SPEC_CONTACT).setContent(
-                new Intent(this, TabSearchDoctorActivity.class));
-        initTabPanel(tabDoctor, contactBadgeRadio, R.string.radio_label_contact, R.drawable.radio_bg_explore, listener);
+        initTabPanel(contactBadgeRadio, R.string.radio_label_contact, R.drawable.radio_bg_explore);
     }
 
     @Override
@@ -280,9 +219,7 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
 
     @Override
     public void addMineTab() {
-        TabSpec tabMine = tabHost.newTabSpec(TAB_SPEC_PROFILE);
-        tabMine.setIndicator(TAB_SPEC_PROFILE).setContent(new Intent(this, MineActivity.class));
-        initTabPanel(tabMine, profileBadgeRadio, R.string.radio_label_profile, R.drawable.radio_bg_profile, listener);
+        initTabPanel(profileBadgeRadio, R.string.radio_label_profile, R.drawable.radio_bg_profile);
     }
 
     @Override
@@ -293,10 +230,7 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
 
     @Override
     public void addDiscoveryTab() {
-        TabSpec tabDiscovery = tabHost.newTabSpec(TAB_SPEC_EXPLORE);
-        tabDiscovery.setIndicator(TAB_SPEC_EXPLORE).setContent(
-                new Intent(this, DiscoveryActivity.class));
-        initTabPanel(tabDiscovery, exploreBadgeRadio, R.string.radio_label_explore, R.drawable.radio_bg_explore, listener);
+        initTabPanel(exploreBadgeRadio, R.string.radio_label_explore, R.drawable.radio_bg_explore);
     }
 
     @Override
@@ -305,22 +239,9 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
         hideTabPanel(exploreBadgeRadio);
     }
 
-    private class RadioClickListener implements OnClickListener {
-        @Override
-        public void onClick(View v) {
-            radioClick(v.getId());
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        tabHost = null;
-
-//        AndroidEventManager.getInstance().removeEventListener(
-//                EventCode.LoginActivityLaunched, this);
-//        AndroidEventManager.getInstance().removeEventListener(
-//                EventCode.UnreadMessageCountChanged, this);
         unbinder.unbind();
         toastWrapper.cancel();
     }
@@ -340,7 +261,7 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
     }
 
     public void gotoSearchView() {
-        radioClick(contactBadgeRadio);
+        root.check(contactBadgeRadio.getId());
     }
 
 //    @Override
@@ -362,13 +283,6 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
     /**
      * 初始化或者更新消息tab页
      */
-    private void initOrUpdateConversationTab() {
-        if (tabConversation != null) {
-            tabConversation.setIndicator(TAB_SPEC_CONVERSATION).setContent(
-                    new Intent(this, Message_TabActivity.class));
-        }
-    }
-
 //    @Override
 //    protected void onLoginCompleted(String result) {
 //        super.onLoginCompleted(result);
@@ -403,51 +317,85 @@ public class MainActivity extends TabActivity implements MainConfigContracts.Con
         //bindUnreadCountTextView(view, R.id.badge);
     }
 
-    // refactor tab view item.
-    private void radioClick(BadgeRadioButton view) {
-        radioClick(view.getId());
-    }
-
-    private void radioClick(int viewId) {
-        setSelectFlag(false);
-
-        switch (viewId) {
+    @Override
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        switch (checkedId) {
             case R.id.summaryBadgeRadio:
-                tabHost.setCurrentTabByTag(TAB_SPEC_SUMMARY);
-                setActiveIndex(INDEX_SUMMARY);
+                activateSummary();
                 reportTabClickEvent(EVENT_SUMMARY);
                 break;
             case R.id.conversationBadgeRadio:
-                tabHost.setCurrentTabByTag(TAB_SPEC_CONVERSATION);
-                setActiveIndex(INDEX_CONVERSATION);
+                activateMessage();
                 reportTabClickEvent(EVENT_CONVERSATION);
                 break;
             case R.id.contactBadgeRadio:
-                tabHost.setCurrentTabByTag(TAB_SPEC_CONTACT);
-                setActiveIndex(INDEX_CONTACT);
+                activateContactTab();
                 reportTabClickEvent(EVENT_CONTACT);
                 break;
             case R.id.exploreBadgeRadio:
-                tabHost.setCurrentTabByTag(TAB_SPEC_EXPLORE);
-                setActiveIndex(INDEX_EXPLORE);
+                activateExploreTab();
                 reportTabClickEvent(EVENT_EXPLORE);
                 break;
             case R.id.profileBadgeRadio:
-                tabHost.setCurrentTabByTag(TAB_SPEC_PROFILE);
-                setActiveIndex(INDEX_PROFILE);
+                activateMineTab();
                 reportTabClickEvent(EVENT_PROFILE);
                 break;
             default:
+                showUnknownTabError();
                 break;
         }
-
-        activeBadgeRadio = ButterKnife.findById(tabHost, viewId);
-        setSelectFlag(true);
     }
 
-    private void setSelectFlag(boolean flag) {
-        if (null != activeBadgeRadio) {
-            activeBadgeRadio.setSelectFlag(flag);
+    private void initContents() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.tabcontent);
+        if (fragment == null) {
+            fragment = SummaryFragment.newInstance(getIntent().getExtras());
+            replaceContentTab(fragment);
+        } else {
+            attachContentTab(fragment);
         }
+    }
+
+    private void initBottomTabs() {
+        root = (RadioGroup) findViewById(R.id.main_radio);
+        root.check(R.id.summaryBadgeRadio);
+        root.setOnCheckedChangeListener(this);
+    }
+
+    private void activateSummary() {
+        replaceContentTab(SummaryFragment.newInstance());
+    }
+
+    private void activateMessage() {
+        replaceContentTab(ChatListFragment.newInstance());
+    }
+
+    private void activateContactTab() {
+        replaceContentTab(ContactListFragment.newInstance());
+    }
+
+    private void activateExploreTab() {
+        replaceContentTab(ExploreFragment.newInstance());
+    }
+
+    private void activateMineTab() {
+        replaceContentTab(ProfileFragment.newInstance());
+    }
+
+    private void attachContentTab(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .attach(fragment)
+                .commit();
+    }
+    private void replaceContentTab(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(android.R.id.tabcontent, fragment, "")
+                .commit();
+    }
+
+    private void showUnknownTabError() {
     }
 }

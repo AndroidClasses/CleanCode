@@ -1,120 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/tabhost"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".MainActivity"
+    >
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@color/bottom_tab_bg"
-        android:orientation="vertical">
+    <RadioGroup
+        android:id="@+id/main_radio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="bottom"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <FrameLayout
-            android:id="@android:id/tabcontent"
-            android:layout_width="fill_parent"
-            android:layout_height="0.0dip"
-            android:layout_weight="1.0"/>
+        <include layout="@layout/badge_radio_button"
+            style="@style/badge_radio_button"
+            android:id="@+id/summaryBadgeRadio"
+            />
 
-        <TabWidget
-            android:id="@android:id/tabs"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.0"
-            android:visibility="gone"/>
+        <include layout="@layout/badge_radio_button"
+            style="@style/badge_radio_button"
+            android:id="@+id/conversationBadgeRadio"
+            />
 
-        <TextView
-            style="@style/span_line_style"/>
+        <include layout="@layout/badge_radio_button"
+            style="@style/badge_radio_button"
+            android:id="@+id/contactBadgeRadio"
+            />
 
-        <RadioGroup
-            android:id="@+id/main_radio"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+        <include layout="@layout/badge_radio_button"
+            style="@style/badge_radio_button"
+            android:id="@+id/exploreBadgeRadio"
+            />
 
-            <!--<FrameLayout-->
-                <!--android:id="@+id/radio_button_panel1"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_weight="1">-->
+        <include layout="@layout/badge_radio_button"
+            style="@style/badge_radio_button"
+            android:id="@+id/profileBadgeRadio"
+            />
 
-                <!--<RadioButton-->
-                    <!--android:id="@+id/radio_button1"-->
-                    <!--style="@style/main_tab_bottom"-->
-                    <!--android:background="@drawable/radio_bg_summary"-->
-                    <!--android:tag="radio_button0"-->
-                    <!--android:text="@string/radio_label_summary"/>-->
-            <!--</FrameLayout>-->
+    </RadioGroup>
 
-            <include layout="@layout/badge_radio_button"
-                style="@style/badge_radio_button"
-                android:id="@+id/summaryBadgeRadio"
-                />
-
-            <include layout="@layout/badge_radio_button"
-                style="@style/badge_radio_button"
-                android:id="@+id/conversationBadgeRadio"
-                />
-
-            <include layout="@layout/badge_radio_button"
-                style="@style/badge_radio_button"
-                android:id="@+id/contactBadgeRadio"
-                />
-
-            <include layout="@layout/badge_radio_button"
-                style="@style/badge_radio_button"
-                android:id="@+id/exploreBadgeRadio"
-                />
-
-            <include layout="@layout/badge_radio_button"
-                style="@style/badge_radio_button"
-                android:id="@+id/profileBadgeRadio"
-                />
-
-            <!--<FrameLayout-->
-                <!--android:id="@+id/radio_button_panel3"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_weight="1">-->
-
-                <!--<RadioButton-->
-                    <!--android:id="@+id/radio_button3"-->
-                    <!--style="@style/main_tab_bottom"-->
-                    <!--android:background="@drawable/radio_bg_explore"-->
-                    <!--android:tag="radio_button2"-->
-                    <!--android:text="@string/radio_label_contact"/>-->
-            <!--</FrameLayout>-->
-
-            <!--<FrameLayout-->
-                <!--android:id="@+id/radio_button_panel5"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_weight="1">-->
-
-                <!--<RadioButton-->
-                    <!--android:id="@+id/radio_button5"-->
-                    <!--style="@style/main_tab_bottom"-->
-                    <!--android:background="@drawable/radio_bg_explore"-->
-                    <!--android:tag="radio_button5"-->
-                    <!--android:text="@string/tab_discovery" />-->
-            <!--</FrameLayout>-->
-
-            <!--<FrameLayout-->
-                <!--android:id="@+id/radio_button_panel4"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_weight="1">-->
-
-                <!--<RadioButton-->
-                    <!--android:id="@+id/radio_button4"-->
-                    <!--style="@style/main_tab_bottom"-->
-                    <!--android:background="@drawable/radio_bg_profile"-->
-                    <!--android:tag="radio_button4"-->
-                    <!--android:text="@string/tab_mine"/>-->
-            <!--</FrameLayout>-->
-        </RadioGroup>
-    </LinearLayout>
-
-</TabHost>
+    <FrameLayout
+        android:id="@android:id/tabcontent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/main_radio"/>
+</RelativeLayout>
