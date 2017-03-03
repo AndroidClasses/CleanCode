@@ -20,13 +20,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.cleaner.main.SummaryActivity"/>
-        <activity android:name="com.cleaner.main.RecyclerSummaryActivity"/>
-        <activity android:name="com.cleaner.main.RecyclerSummaryV2Activity"/>
-        <activity android:name="com.cleaner.main.Message_TabActivity" />
-        <activity android:name="com.cleaner.main.TabSearchDoctorActivity"/>
-        <activity android:name="com.cleaner.main.MineActivity"/>
-        <activity android:name="com.cleaner.main.DiscoveryActivity" />
     </application>
 
 </manifest>
