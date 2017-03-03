@@ -9,6 +9,8 @@ public class MainConfigContracts {
      * Created by yangfeng on 16-6-29.
      */
     public interface ConfigView {
+        void showSummaryTab();
+
         void addSummaryTab();
         void addRecyclerSummaryTab();
         void addRecyclerSummaryV2Tab();
@@ -33,5 +35,6 @@ public class MainConfigContracts {
      */
     public interface ConfigPresenter {
         void initTabs();
+        void getSummaryFragment();
     }
 }

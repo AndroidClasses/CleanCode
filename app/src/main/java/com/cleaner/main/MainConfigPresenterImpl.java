@@ -1,7 +1,7 @@
 package com.cleaner.main;
 
-import com.cleaner.config.PageConfig;
 import com.cleaner.config.ConfigurationRepository;
+import com.cleaner.config.PageConfig;
 
 import javax.inject.Inject;
 
@@ -29,13 +29,26 @@ public class MainConfigPresenterImpl implements MainConfigContracts.ConfigPresen
 
     private void initHomePageTab() {
         if (pageConfig.hasSummary()) {
+            view.showSummaryTab();
+        } else if (pageConfig.hasRecyclerSummary()) {
+            view.showSummaryTab();
+        } else if (pageConfig.hasRecyclerSummaryV2()) {
+            view.showSummaryTab();
+        } else {
+            view.addUnknownSummaryTab();
+        }
+    }
+
+    @Override
+    public void getSummaryFragment() {
+        if (pageConfig.hasSummary()) {
             view.addSummaryTab();
         } else if (pageConfig.hasRecyclerSummary()) {
             view.addRecyclerSummaryTab();
         } else if (pageConfig.hasRecyclerSummaryV2()) {
             view.addRecyclerSummaryV2Tab();
         } else {
-            view.addUnknownSummaryTab();
+            view.addSummaryTab();
         }
     }
 

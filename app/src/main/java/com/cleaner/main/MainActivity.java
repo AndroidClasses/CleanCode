@@ -14,6 +14,8 @@ import com.cleaner.main.fragments.ChatListFragment;
 import com.cleaner.main.fragments.ContactListFragment;
 import com.cleaner.main.fragments.ExploreFragment;
 import com.cleaner.main.fragments.ProfileFragment;
+import com.cleaner.main.fragments.RecyclerSummaryFragment;
+import com.cleaner.main.fragments.RecyclerSummaryV2Fragment;
 import com.cleaner.main.fragments.SummaryFragment;
 import com.cleaner.view.BadgeRadioButton;
 
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
     BadgeRadioButton profileBadgeRadio;
 
     private BadgeRadioButton currentButton;
+    private boolean inited = false;
 
     private static final int EVENT_SUMMARY = 0;
     private static final int EVENT_CONVERSATION = 1;
@@ -114,17 +117,20 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
 
     @Override
     public void addSummaryTab() {
-        initHomePageTab(SummaryActivity.class);
+        replaceContentTab(inited ? SummaryFragment.newInstance() : SummaryFragment.newInstance(getIntent().getExtras()));
+//        initHomePageTab(SummaryActivity.class);
     }
 
     @Override
     public void addRecyclerSummaryTab() {
-        initHomePageTab(RecyclerSummaryActivity.class);
+        replaceContentTab(inited ? RecyclerSummaryFragment.newInstance() : RecyclerSummaryFragment.newInstance(getIntent().getExtras()));
+//        initHomePageTab(RecyclerSummaryActivity.class);
     }
 
     @Override
     public void addRecyclerSummaryV2Tab() {
-        initHomePageTab(RecyclerSummaryV2Activity.class);
+        replaceContentTab(inited ? RecyclerSummaryV2Fragment.newInstance() : RecyclerSummaryV2Fragment.newInstance(getIntent().getExtras()));
+//        initHomePageTab(RecyclerSummaryV2Activity.class);
     }
 
     @Override
@@ -133,7 +139,8 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
         hideTabPanel(summaryBadgeRadio);
     }
 
-    private void initHomePageTab(@NonNull Class<?> cls) {
+    @Override
+    public void showSummaryTab() {
         initTabPanel(summaryBadgeRadio, R.string.radio_label_summary, R.drawable.radio_bg_summary);
     }
 
@@ -267,8 +274,8 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
     private void initContents() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(android.R.id.tabcontent);
         if (fragment == null) {
-            fragment = SummaryFragment.newInstance(getIntent().getExtras());
-            replaceContentTab(fragment);
+            configPresenter.getSummaryFragment();
+            inited = true;
         } else {
             attachContentTab(fragment);
         }
@@ -282,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements MainConfigContrac
     }
 
     private void activateSummary() {
-        replaceContentTab(SummaryFragment.newInstance());
+        configPresenter.getSummaryFragment();
     }
 
     private void activateMessage() {
